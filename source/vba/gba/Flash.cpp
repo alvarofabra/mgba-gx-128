@@ -116,20 +116,9 @@ void flashReadGameSkip(gzFile gzFile, int version)
 
 void flashSetSize(int size)
 {
-  //  log("Setting flash size to %d\n", size);
-  if(size == 0x10000) {
-    flashDeviceID = 0x1b;
-    flashManufacturerID = 0x32;
-  } else {
-    flashDeviceID = 0x13; //0x09;
-    flashManufacturerID = 0x62; //0xc2;
-  }
-  // Added to make 64k saves compatible with 128k ones
-  // (allow wrongfuly set 64k saves to work for Pokemon games)
-  if ((size == 0x20000) && (flashSize == 0x10000))
-    memcpy((u8 *)(flashSaveMemory+0x10000), (u8 *)(flashSaveMemory), 0x10000);
-  flashSize = size;
+	flashSize = size;
 }
+
 
 u8 flashRead(u32 address)
 {
