@@ -17,9 +17,9 @@ jobs:
 
       - name: Configurar entorno devkitPro y dependencias
         run: |
-          # Instalar pacman y configurar repositorios oficiales de devkitPro
+          # Descargar directamente el script instalador desde el repositorio oficial de devkitPro
           sudo apt-get update && sudo apt-get install -y wget
-          wget https://devkitpro.org
+          wget https://githubusercontent.com
           chmod +x ./install-devkitpro-pacman
           sudo ./install-devkitpro-pacman --noconfirm
           
@@ -30,7 +30,7 @@ jobs:
           echo "DEVKITPPC=$DEVKITPPC" >> $GITHUB_ENV
           echo "$DEVKITPPC/bin" >> $GITHUB_PATH
           
-          # Instalar los compiladores y las librerías que pide mGBA GX
+          # Instalar los compiladores y las librerías necesarias
           sudo /opt/devkitpro/pacman/bin/pacman -Syu --noconfirm
           sudo /opt/devkitpro/pacman/bin/pacman -S --noconfirm wii-dev wii-portlibs ppc-mxml
 
