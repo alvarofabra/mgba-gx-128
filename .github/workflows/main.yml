@@ -15,9 +15,29 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Compilar emulador en Docker
+      - name: Configurar entorno devkitPro y dependencias
         run: |
-          docker run --rm -v "$PWD":/project devkitpro/devkitppc make -f Makefile.wii clean && docker run --rm -v "$PWD":/project devkitpro/devkitppc make -f Makefile.wii
+          # Instalar pacman y configurar repositorios oficiales de devkitPro
+          sudo apt-get update && sudo apt-get install -y wget
+          wget https://devkitpro.org
+          chmod +x ./install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman --noconfirm
+          
+          # Cargar las herramientas en las variables del sistema
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITPPC=$DEVKITPRO/devkitPPC
+          echo "DEVKITPRO=$DEVKITPRO" >> $GITHUB_ENV
+          echo "DEVKITPPC=$DEVKITPPC" >> $GITHUB_ENV
+          echo "$DEVKITPPC/bin" >> $GITHUB_PATH
+          
+          # Instalar los compiladores y las librerías que pide mGBA GX
+          sudo /opt/devkitpro/pacman/bin/pacman -Syu --noconfirm
+          sudo /opt/devkitpro/pacman/bin/pacman -S --noconfirm wii-dev wii-portlibs ppc-mxml
+
+      - name: Compilar emulador
+        run: |
+          make -f Makefile.wii clean
+          make -f Makefile.wii
 
       - name: Guardar boot.dol compilado
         uses: actions/upload-artifact@v4
