@@ -1,0 +1,26 @@
+name: Compilar mGBA GX 128KB
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo fuente
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Compilar emulador en Docker
+        run: |
+          docker run --rm -v "$PWD":/project devkitpro/devkitppc make -f Makefile.wii clean && docker run --rm -v "$PWD":/project devkitpro/devkitppc make -f Makefile.wii
+
+      - name: Guardar boot.dol compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: mGBAGX-Modificado-128KB
+          path: boot.dol
